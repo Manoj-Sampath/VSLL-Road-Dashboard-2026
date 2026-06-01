@@ -454,6 +454,14 @@ tr:hover td{background:rgba(26,122,110,.06);color:#0d2420;}
 ::-webkit-scrollbar-thumb:hover{background:var(--teal);}
 
 .no-data{text-align:center;padding:40px;color:var(--text4);font-size:12px;font-style:italic;}
+
+/* ── DRILL SECTION BAR ─────────────────────────────────── */
+.drill-section-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:linear-gradient(135deg,var(--teal-d),var(--teal));border-radius:var(--radius) var(--radius) 0 0;gap:12px;flex-wrap:wrap;}
+.drill-section-title{font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:#fff;letter-spacing:.5px;}
+.drill-section-meta{font-size:10px;color:rgba(255,255,255,.65);margin-top:2px;}
+.drill-back-btn{height:28px;padding:0 12px;border-radius:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s;}
+.drill-back-btn:hover{background:rgba(255,255,255,.28);}
+.drill-hint{padding:48px 24px;text-align:center;}
 .chart-lbl-btn{height:22px;padding:0 8px;border-radius:4px;border:1px solid rgba(26,122,110,.2);background:rgba(26,122,110,.05);color:var(--teal);font-family:'Inter',sans-serif;font-size:9px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
 .chart-lbl-btn:hover{background:rgba(26,122,110,.12);}
 .chart-lbl-btn.on{background:rgba(26,122,110,.18);border-color:rgba(26,122,110,.4);}
@@ -616,6 +624,10 @@ tr:hover td{background:rgba(26,122,110,.06);color:#0d2420;}
         <div class="filter-label">Consignee</div>
         <div class="ms-wrap" id="ms-consignee"></div>
       </div>
+      <div class="filter-group">
+        <div class="filter-label">Plant / WH</div>
+        <div class="ms-wrap" id="ms-plant"></div>
+      </div>
       <div class="filter-actions">
         <button class="btn-reset" onclick="resetFilters()">↺ Reset</button>
         <button class="btn-apply" onclick="applyFilters()">▶ Apply</button>
@@ -657,6 +669,7 @@ tr:hover td{background:rgba(26,122,110,.06);color:#0d2420;}
   <div class="kpi-row"><div class="kpi-section-title">TURNAROUND TIME</div><div class="kpi-grid" id="kpi-tat"></div></div>
   <div class="kpi-row"><div class="kpi-section-title">DETENTION</div><div class="kpi-grid" id="kpi-detention"></div></div>
   <div class="kpi-row"><div class="kpi-section-title">COST</div><div class="kpi-grid" id="kpi-cost"></div></div>
+  <div class="kpi-row"><div class="kpi-section-title">SLA PERFORMANCE</div><div class="kpi-grid" id="kpi-sla"></div></div>
 
   <!-- FUNNEL -->
   <div class="section-header">
@@ -757,6 +770,60 @@ tr:hover td{background:rgba(26,122,110,.06);color:#0d2420;}
     </div>
   </div>
 
+  <!-- DAMAGE ANALYTICS — Change 5 -->
+  <div id="damage-section">
+    <div class="section-header" style="margin-top:22px;">
+      <div class="section-title">🔧 Damage Analytics</div>
+      <div class="section-line"></div>
+      <div class="section-meta" id="damage-meta"></div>
+    </div>
+    <div class="kpi-row"><div class="kpi-grid" id="kpi-damage"></div></div>
+    <div class="charts-grid" style="margin-top:12px;">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Damage Nature Distribution</div>
+          <button class="chart-lbl-btn" id="lbl-btn-DmgNature" onclick="toggleChartLabels('chart-dmg-nature','DmgNature')">🏷 Labels</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-dmg-nature"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Claimed Value by Nature (₹)</div>
+          <button class="chart-lbl-btn" id="lbl-btn-DmgClaimNature" onclick="toggleChartLabels('chart-dmg-claim-nature','DmgClaimNature')">🏷 Labels</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-dmg-claim-nature"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Damage by Vehicle Type (CB/OB)</div>
+          <button class="chart-lbl-btn" id="lbl-btn-DmgVeh" onclick="toggleChartLabels('chart-dmg-veh','DmgVeh')">🏷 Labels</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-dmg-veh"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Damage by Destination (Top 10)</div>
+          <button class="chart-lbl-btn" id="lbl-btn-DmgDest" onclick="toggleChartLabels('chart-dmg-dest','DmgDest')">🏷 Labels</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-dmg-dest"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Damage Bucket Analysis</div>
+          <button class="chart-lbl-btn" id="lbl-btn-DmgBucket" onclick="toggleChartLabels('chart-dmg-bucket','DmgBucket')">🏷 Labels</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-dmg-bucket"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Claim Value by Insured Party (₹)</div>
+          <button class="chart-lbl-btn" id="lbl-btn-DmgInsured" onclick="toggleChartLabels('chart-dmg-insured','DmgInsured')">🏷 Labels</button>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-dmg-insured"></canvas></div>
+      </div>
+    </div>
+  </div>
+
   <!-- EXCEPTION TABLE -->
   <div class="section-header">
     <div class="section-title">⚠ Exception Report</div>
@@ -807,10 +874,14 @@ tr:hover td{background:rgba(26,122,110,.06);color:#0d2420;}
           <span style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text4);">Parameter</span>
           <select id="yoy-metric" class="filter-control" style="min-width:180px;height:32px;" onchange="renderYoY()">
             <option value="indents">Demand (Indents)</option>
+            <option value="placed">Placed</option>
             <option value="dispatched">Execution (Dispatched)</option>
             <option value="thc">Total THC (₹)</option>
             <option value="avgthc">Avg THC / Shipment</option>
             <option value="costwp">Avg Cost / Wp (₹)</option>
+            <option value="cost">Cost — THC For Dashboard (₹)</option>
+            <option value="revenue">Revenue — Freight For Dashboard (₹)</option>
+            <option value="totalwp">Total Wp</option>
           </select>
         </div>
         <div style="display:flex;flex-direction:column;gap:4px;">
@@ -916,6 +987,12 @@ const PAL = ['#26a69a','#9bc53d','#54a0ff','#ff9f43','#ff6b6b','#a29bfe','#ffd32
 // KPI TOOLTIP DEFINITIONS
 // ════════════════════════════════════════════════════════════
 const KPI_TIPS = {
+  'Total Damage Cases':    'Count of rows where Damage Nature of Loss is not "No Damage".',
+  'Total Damaged Pieces':  'Sum of Damage Pcs for all rows with damage (excluding No Damage).',
+  'Total Claimed Value':   'Sum of Damage Claimed Value for all rows with damage.',
+  'Avg Claimed Value':     'Average Damage Claimed Value per damage case.',
+  'Total Freight':         'Sum of Total Freight (Rs.) For DashBoard for all filtered rows.',
+  'SLA Adherence %':     'Percentage of rows where Indent Date Vs Act. Placement Date is 0, 1 or 2 days.',
   'Total Indents':       'COUNT of all rows in the filtered dataset where an Indent Date exists (based on selected date type and filters).',
   'Completed':           'Rows where Actual Reporting At Destination AND Unloading/Release at Destination both exist.',
   'In Transit':          'Rows where Dispatch Date exists BUT Actual Reporting At Destination does NOT exist.',
@@ -979,7 +1056,8 @@ let crossFilter = { transporter: null, route: null, vehicle: null, customer: nul
 let excSortKey = '_placementDelay', excSortDir = -1;
 const msState = {
   customer: new Set(), from: new Set(), to: new Set(),
-  transporter: new Set(), vehType: new Set(), status: new Set(), tripType: new Set(), consignee: new Set()
+  transporter: new Set(), vehType: new Set(), status: new Set(), tripType: new Set(), consignee: new Set(),
+  plant: new Set()  // Change 1: Plant/WH filter
 };
 
 
@@ -987,7 +1065,8 @@ function deltaHtml(curr, ly) {
   if (!ly || ly === 0) return '';
   const pct = ((curr - ly) / ly * 100);
   const sign = pct > 0 ? '+' : '';
-  const cls = pct > 5 ? 'up' : pct < -5 ? 'dn' : 'neu';
+  // Change 12: growth (positive) = green (lime), decline (negative) = red
+  const cls = pct > 5 ? 'dn' : pct < -5 ? 'up' : 'neu';  // dn=green, up=red per CSS
   return `<span class="kpi-cmp-delta ${cls}">${sign}${pct.toFixed(0)}%</span>`;
 }
 function updateClock() {
@@ -1263,16 +1342,14 @@ function parseRow(r) {
   else if (customer.includes('EK') || customer.includes('EKPL')) customer = 'EK';
   else if (!customer) customer = 'Other';
 
-  // TRIP TYPE from Remarks — case-insensitive, inclusion logic
-  const remarksRaw = String(r['Remarks'] || '').trim();
-  const remarksUp  = remarksRaw.toUpperCase();
-  const lr = String(r['LR No./ Shipment No.'] || '').trim();
+  // TRIP TYPE from TRIP NUM column — Change 4: New classification logic
+  const tripNumRaw = String(r['TRIP NUM'] || '').trim();
+  const tripNumUp  = tripNumRaw.toUpperCase();
   let tripType;
-  if (remarksUp.includes('STO'))                          tripType = 'STO';
-  else if (remarksUp.includes('ACTUAL TRIP'))             tripType = 'Actual Trip';
-  else if (remarksRaw === '' && lr !== '')                 tripType = 'Direct Trip';
-  else if (remarksRaw !== '')                              tripType = 'Others';
-  else                                                     tripType = 'Direct Trip';
+  if (tripNumUp.startsWith('STO-') || tripNumRaw === 'STO')      tripType = 'STO';
+  else if (tripNumUp.startsWith('ACTUAL-') || tripNumUp === 'ACTUAL') tripType = 'Actual';
+  else if (tripNumRaw === '' || tripNumRaw === '-')               tripType = 'Direct';
+  else                                                             tripType = tripNumRaw; // show as-is
 
   // CURRENT LOCATION DISPLAY
   let currentLocation;
@@ -1282,9 +1359,13 @@ function parseRow(r) {
   else currentLocation = '—';
 
   // Cost/Wp calculation: Cost per Wp = THC / Total Wp (no MW conversion)
-  const thc      = cleanNum(r['THC (Rs.)']);
+  // Change 2: Use THC (Rs.) For DashBoard as the cost source
+  const thc      = cleanNum(r['THC (Rs.) For DashBoard'] !== null && r['THC (Rs.) For DashBoard'] !== undefined && r['THC (Rs.) For DashBoard'] !== '' ? r['THC (Rs.) For DashBoard'] : r['THC (Rs.)']);
   const totalWp  = cleanNum(r['Total Wp']);
   const costPerWp = totalWp > 0 ? thc / totalWp : 0;   // ₹ per Wp
+
+  // Change 3: Total Freight For Dashboard
+  const freightDash = cleanNum(r['Total Freight (Rs.) For DashBoard'] !== null && r['Total Freight (Rs.) For DashBoard'] !== undefined && r['Total Freight (Rs.) For DashBoard'] !== '' ? r['Total Freight (Rs.) For DashBoard'] : r['Total Freight (Rs.)']);
 
   return {
     ...r,
@@ -1296,6 +1377,7 @@ function parseRow(r) {
     _totalDetention: originDetention + destDetention,
     _customer: customer,
     _freight: cleanNum(r['Total Freight (Rs.)']),
+    _freightDash: freightDash,
     _thc: thc,
     _totalWp: totalWp,
     _costPerWp: costPerWp,
@@ -1304,9 +1386,28 @@ function parseRow(r) {
     _transporter: String(r['Transporter Name'] || '').trim(),
     _vehType: String(r['Veh. Type'] || '').trim(),
     _lr: String(r['LR No./ Shipment No.'] || '').trim(),
-    _consignee: String(r['Consignee Name'] || '').trim() || null,  // null if blank
+    _consignee: String(r['Consignee Name'] || '').trim() || null,
+    _plant: String(r['PLANT /WH NAME'] || '').trim() || null,
     _tripType: tripType,
+    _tripNum: tripNumRaw,
     _currentLocation: currentLocation,
+    // Damage fields
+    _damagePcs: cleanNum(r['Damage Pcs']),
+    _damageNature: String(r['Damage Nature of Loss'] || '').trim(),
+    _damageInsured: String(r['Damage Insured Name'] || '').trim(),
+    _damageInvoiceQty: cleanNum(r['Damage Invoice Qty']),
+    _damageOrigin: String(r['Damage ORIGIN'] || '').trim(),
+    _damageDest: String(r['Damage DESTINATION'] || '').trim(),
+    _damageCBOB: String(r['Damage CB/OB Vehicle'] || '').trim(),
+    _damageClaimValue: cleanNum(r['Damage Claimed Value']),
+    _damageBucket: String(r['Damage Bucket'] || '').trim(),
+    // SLA field
+    _slaValue: (() => {
+      const sv = r['Indent Date Vs Act. Placement Date'];
+      if (sv === null || sv === undefined || sv === '') return null;
+      const n = parseFloat(String(sv).trim());
+      return isNaN(n) ? null : n;
+    })(),
   };
 }
 
@@ -1354,7 +1455,7 @@ function renderMSOpts(id, stateKey, options, search) {
 }
 
 function phText(sk) {
-  return {customer:'All Customers',from:'All Origins',to:'All Destinations',transporter:'All Transporters',vehType:'All Types',status:'All Statuses',tripType:'All Trip Types'}[sk]||'All';
+  return {customer:'All Customers',from:'All Origins',to:'All Destinations',transporter:'All Transporters',vehType:'All Types',status:'All Statuses',tripType:'All Trip Types',consignee:'All Consignees',plant:'All Plants/WH'}[sk]||'All';
 }
 
 function updateMSLabel(id, stateKey) {
@@ -1454,8 +1555,11 @@ function buildMultiSelects() {
   _msOptions.transporter = [...new Set(rawData.map(r => r._transporter).filter(Boolean))].sort();
   _msOptions.vehType   = [...new Set(rawData.map(r => r._vehType).filter(Boolean))].sort();
   _msOptions.status    = ['NOT_PLACED','PLACED_NOT_DISPATCHED','IN_TRANSIT','AT_DESTINATION','COMPLETED'];
-  _msOptions.tripType  = ['STO','Actual Trip','Direct Trip','Others'];
+  // Change 4: Trip types derived from TRIP NUM
+  _msOptions.tripType  = [...new Set(rawData.map(r => r._tripType).filter(Boolean))].sort();
   _msOptions.consignee = [...new Set(rawData.map(r => r._consignee).filter(Boolean))].sort();
+  // Change 1: Plant/WH
+  _msOptions.plant     = [...new Set(rawData.map(r => r._plant).filter(Boolean))].sort();
 
   buildMultiSelect('ms-customer',   'customer',   _msOptions.customer,   'All Customers');
   buildMultiSelect('ms-from',       'from',        _msOptions.from,       'All Origins');
@@ -1465,6 +1569,7 @@ function buildMultiSelects() {
   buildMultiSelect('ms-status',     'status',      _msOptions.status,     'All Statuses');
   buildMultiSelect('ms-trip-type',  'tripType',    _msOptions.tripType,   'All Trip Types');
   buildMultiSelect('ms-consignee',  'consignee',   _msOptions.consignee,  'All Consignees');
+  buildMultiSelect('ms-plant',      'plant',       _msOptions.plant,      'All Plants/WH');  // Change 1
 
   document.querySelectorAll('.dt-btn').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('.dt-btn').forEach(x => x.classList.remove('active'));
@@ -1520,6 +1625,8 @@ function applyFilters() {
     if (msState.status.size      > 0 && msState.status.has(r._status))           return false;
     if (tripExcluded.size > 0 && tripExcluded.has(String(r._tripType || '').trim())) return false;
     if (msState.consignee.size > 0 && msState.consignee.has(String(r._consignee || '').trim())) return false;
+    // Change 1: Plant/WH filter
+    if (msState.plant.size > 0 && msState.plant.has(String(r._plant || '').trim())) return false;
     // Cross-filters
     if (crossFilter.transporter && r._transporter !== crossFilter.transporter) return false;
     if (crossFilter.vehicle     && r._vehType     !== crossFilter.vehicle)     return false;
@@ -1537,6 +1644,7 @@ function resetFilters() {
   Object.keys(msState).forEach(k => msState[k].clear());
   Object.keys(crossFilter).forEach(k => crossFilter[k] = null);
   msState.consignee.clear();
+  msState.plant.clear();  // Change 1
   document.querySelectorAll('.dt-btn').forEach(b => { b.classList.remove('active'); if (b.dataset.type === 'indent') b.classList.add('active'); });
   dateType = 'indent';
   buildMultiSelects();
@@ -1656,6 +1764,9 @@ function renderYoY() {
       case 'thc':        return Math.round(rows.reduce((s,r)=>s+r._thc,0));
       case 'avgthc':     { const v = rows.reduce((s,r)=>s+r._thc,0); return rows.length ? +(v/rows.length).toFixed(2) : 0; }
       case 'costwp':     { const wp=rows.filter(r=>r._costPerWp>0); return wp.length ? +(wp.reduce((s,r)=>s+r._costPerWp,0)/wp.length).toFixed(4) : 0; }
+      case 'cost':       return Math.round(rows.reduce((s,r)=>s+r._thc,0));  // THC For Dashboard
+      case 'revenue':    return Math.round(rows.reduce((s,r)=>s+(r._freightDash||0),0));
+      case 'totalwp':    return Math.round(rows.reduce((s,r)=>s+(r._totalWp||0),0));
       default:           return rows.filter(r=>r._indentDate).length;
     }
   }
@@ -1672,6 +1783,7 @@ function renderYoY() {
     if (msState.status.size>0     && msState.status.has(r._status))        return false;
     if (tripExcl.size>0           && tripExcl.has(String(r._tripType||'').trim())) return false;
     if (msState.consignee.size>0  && msState.consignee.has(String(r._consignee||'').trim())) return false;
+    if (msState.plant.size>0      && msState.plant.has(String(r._plant||'').trim())) return false;  // Change 1
     return true;
   }
 
@@ -1703,7 +1815,8 @@ function renderYoY() {
         const dow = (d.getDay()+6)%7;
         const weekStart = new Date(d); weekStart.setDate(d.getDate()-dow);
         const wn = Math.ceil((weekStart - new Date(weekStart.getFullYear(),0,1))/604800000+1);
-        return `W${String(wn).padStart(2,'0')}`;
+        // Change 8: include start date for label generation
+        return `W${String(wn).padStart(2,'0')}-${weekStart.getFullYear()}-${String(weekStart.getMonth()+1).padStart(2,'0')}-${String(weekStart.getDate()).padStart(2,'0')}`;
       }
       case 'yearly': return String(yr);
       default: return `${String(d.getMonth()+1).padStart(2,'0')}`;  // monthly: MM
@@ -1712,7 +1825,16 @@ function renderYoY() {
   function prettyYoYKey(k, yr) {
     switch(yoyGranularity) {
       case 'daily':   { const [da,mo]=k.split('-'); return `${da} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(mo)-1]}`; }
-      case 'weekly':  return k;
+      case 'weekly': {
+        // Change 8: Format as "W1 (01-Apr–07-Apr)"
+        const parts = k.split('-');
+        const wn = parts[0].replace('W','');
+        const [, sy, sm, sd] = parts;
+        const weekStart = new Date(parseInt(sy), parseInt(sm)-1, parseInt(sd));
+        const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+6);
+        const fmt = d => `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}`;
+        return `W${wn} (${fmt(weekStart)}–${fmt(weekEnd)})`;
+      }
       case 'yearly':  return String(yr);
       default: { const moNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return moNames[Number(k)-1]; }
     }
@@ -1795,7 +1917,7 @@ function renderYoY() {
   }
   if (badge) {
     badge.textContent = pctText;
-    badge.style.color = pctText.startsWith('▲') ? 'var(--red)' : pctText.startsWith('▼') ? 'var(--lime)' : 'var(--text)';
+    badge.style.color = pctText.startsWith('▲') ? 'var(--lime)' : pctText.startsWith('▼') ? 'var(--red)' : 'var(--text)';
   }
 
   const fmtVal = v => {
@@ -1887,22 +2009,31 @@ function renderAll() {
   renderTrends();
   renderDeepDive();
   renderYoY();
+  renderDamageAnalytics();  // Change 5
   renderExceptionTable();
   renderDataTable();
 }
 
 // ════════════════════════════════════════════════════════════
-// YTD KPIs — ignores date range, respects all other filters
+// YTD KPIs — Change 10: FY2026 = Apr 1 2026 to latest date in dataset
+// Ignores date range, respects all other filters
 // ════════════════════════════════════════════════════════════
 function renderYTDKPIs() {
   const el = document.getElementById('kpi-ytd-backlog');
   if (!el) return;
+
+  // Change 10: YTD window = Apr 1, 2026 to latest indent date in dataset
+  const ytdFrom = new Date(2026, 3, 1);  // Apr 1, 2026
+  const allDates = rawData.map(r => r._indentDate).filter(Boolean);
+  const ytdTo = allDates.length ? new Date(Math.max(...allDates.map(d => d.getTime()))) : new Date();
 
   // Apply ALL filters EXCEPT date range and date type
   const vehSet  = new Set([...msState.vehType].map(v => String(v).trim()));
   const tripSet = new Set([...msState.tripType].map(v => String(v).trim()));
 
   const d = rawData.filter(r => {
+    // Change 10: restrict to FY2026 window
+    if (!r._indentDate || r._indentDate < ytdFrom || r._indentDate > ytdTo) return false;
     if (msState.customer.size    > 0 && msState.customer.has(r._customer))       return false;
     if (msState.from.size        > 0 && msState.from.has(r._from))               return false;
     if (msState.to.size          > 0 && msState.to.has(r._to))                   return false;
@@ -1911,6 +2042,7 @@ function renderYTDKPIs() {
     if (msState.status.size      > 0 && msState.status.has(r._status))           return false;
     if (tripSet.size > 0 && tripSet.has(String(r._tripType || '').trim()))       return false;
     if (msState.consignee.size > 0 && msState.consignee.has(String(r._consignee || '').trim())) return false;
+    if (msState.plant.size > 0 && msState.plant.has(String(r._plant || '').trim())) return false;
     if (crossFilter.transporter && r._transporter !== crossFilter.transporter) return false;
     if (crossFilter.vehicle     && r._vehType     !== crossFilter.vehicle)     return false;
     if (crossFilter.customer    && r._customer    !== crossFilter.customer)    return false;
@@ -1918,7 +2050,9 @@ function renderYTDKPIs() {
     return true;
   });
 
-  // YTD TOTAL = rows where Indent Date exists (original definition)
+  const ytdLabel = `FY2026 (${ytdFrom.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}–${ytdTo.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'})})`;
+
+  // YTD TOTAL = rows where Indent Date exists in FY2026 window
   const total       = d.filter(r => r._indentDate).length;
   const notPlaced   = d.filter(r => r._indentDate && !r._actPlacement).length;
   const placedNoDisp= d.filter(r => r._indentDate && r._actPlacement && !r._dispatch).length;
@@ -1932,7 +2066,7 @@ function renderYTDKPIs() {
   window._ytdData = d;
 
   el.innerHTML =
-    kpiCard('🚫','YTD Not Placed',fmtN(notPlaced),'',`${total} total YTD · date filter ignored`,'danger',
+    kpiCard('🚫','YTD Not Placed',fmtN(notPlaced),'',`${total} total · ${ytdLabel}`,'danger',
       `drillOpen('YTD Not Placed',window._ytdData.filter(r=>r._indentDate&&!r._actPlacement))`) +
     kpiCard('⏳','YTD Awaiting Dispatch',fmtN(placedNoDisp),'',`Placed but not dispatched`,'warning',
       `drillOpen('YTD Awaiting Dispatch',window._ytdData.filter(r=>r._indentDate&&r._actPlacement&&!r._dispatch))`) +
@@ -2063,15 +2197,17 @@ function renderKPIs() {
     kpiCard('⚠','% With Detention',fmtN(parseFloat(pctDet),1),'%',`${withDet} shipments`,parseFloat(pctDet)>20?'danger':'warning',
       `drillOpen('Shipments With Detention',filteredData.filter(r=>r._totalDetention>0))`);
 
-  // COST — THC & Cost/Wp
+  // COST — THC & Cost/Wp  (Change 2: using _thc which now comes from THC (Rs.) For DashBoard)
   const totalTHC  = safeSum(d.map(r => r._thc));
   const avgTHC    = total ? totalTHC / total : 0;
   // Cost per Wp (no MW conversion)
   const wpRows    = d.filter(r => r._costPerWp > 0);
   const avgCostWp = wpRows.length ? safeAvg(wpRows.map(r => r._costPerWp)) : 0;
+  // Change 3: Total Freight from For Dashboard column
+  const totalFreightDash = safeSum(d.map(r => r._freightDash));
 
   document.getElementById('kpi-cost').innerHTML =
-    kpiCard('🧾','Total THC',fmtMoney(totalTHC),'','Sum of THC (Rs.) — filtered dataset','',
+    kpiCard('🧾','Total THC',fmtMoney(totalTHC),'','Sum of THC (Rs.) For Dashboard — filtered dataset','',
       `drillOpen('Total THC',filteredData.filter(r=>r._thc>0))`) +
     kpiCard('📉','Avg THC / Shipment',
       avgTHC > 0 ? '₹' + avgTHC.toLocaleString('en-IN',{maximumFractionDigits:2,minimumFractionDigits:2}) : '₹0',
@@ -2080,7 +2216,20 @@ function renderKPIs() {
     kpiCard('⚡','Avg Cost/Wp',
       avgCostWp > 0 ? '₹' + avgCostWp.toFixed(4) : '—','',
       `THC ÷ Wp · ${wpRows.length} rows with Wp data`,'info',
-      `drillOpen('Cost per Wp',filteredData.filter(r=>r._costPerWp>0))`);
+      `drillOpen('Cost per Wp',filteredData.filter(r=>r._costPerWp>0))`) +
+    kpiCard('💰','Total Freight',fmtMoney(totalFreightDash),'','Sum of Total Freight (Rs.) For Dashboard','',
+      `drillOpen('Total Freight',filteredData.filter(r=>r._freightDash>0))`);
+
+  // Change 11: SLA Adherence KPI
+  const slaRows = d.filter(r => r._slaValue !== null);
+  const slaMet = slaRows.filter(r => r._slaValue <= 2).length;
+  const slaAdherence = slaRows.length ? ((slaMet / slaRows.length) * 100).toFixed(1) : '—';
+  const slaEl = document.getElementById('kpi-sla');
+  if (slaEl) slaEl.innerHTML =
+    kpiCard('🎯','SLA Adherence %', slaRows.length ? slaAdherence : '—', slaRows.length ? '%' : '',
+      `${slaMet} of ${slaRows.length} met (≤2 days placement)`,
+      parseFloat(slaAdherence) >= 80 ? 'accent' : parseFloat(slaAdherence) >= 60 ? 'warning' : 'danger',
+      `drillOpen('SLA Met',filteredData.filter(r=>r._slaValue!==null&&r._slaValue<=2))`);
 }
 
 // ════════════════════════════════════════════════════════════
@@ -2410,16 +2559,11 @@ function getGroupKey(r) {
     const dow = (t.getDay()+6)%7;
     t.setDate(t.getDate()-dow);
     const wk = Math.ceil((t - new Date(t.getFullYear(),0,1))/604800000+1);
-    return `${t.getFullYear()}-W${String(wk).padStart(2,'0')}`;
+    // Store week start date for label generation
+    return `${t.getFullYear()}-W${String(wk).padStart(2,'0')}-${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
   }
   if (granularity === 'yearly') return `${d.getFullYear()}`;
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-}
-
-function groupData(data) {
-  const g = {};
-  data.forEach(r => { const k = getGroupKey(r); if (!k) return; if (!g[k]) g[k]=[]; g[k].push(r); });
-  return Object.fromEntries(Object.entries(g).sort((a,b)=>a[0].localeCompare(b[0])));
 }
 
 function prettyKey(k) {
@@ -2429,14 +2573,29 @@ function prettyKey(k) {
     const d = new Date(y, mo-1, da);
     return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
   }
-  if (granularity==='weekly') return k;
+  if (granularity==='weekly') {
+    // Change 8: Format as "W1 (01-Apr–07-Apr)"
+    const parts = k.split('-');
+    // Format: YYYY-Www-YYYY-MM-DD
+    const yr = parts[0], wn = parts[1].replace('W','');
+    const [,, sy, sm, sd] = parts;
+    const weekStart = new Date(parseInt(sy), parseInt(sm)-1, parseInt(sd));
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+6);
+    const fmt = d => `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}`;
+    return `W${wn} (${fmt(weekStart)}–${fmt(weekEnd)})`;
+  }
   if (granularity==='yearly') return k;
   const [y,m]=k.split('-');
   return new Date(y,m-1).toLocaleString('default',{month:'short',year:'2-digit'});
 }
 
+function groupData(data) {
+  const g = {};
+  data.forEach(r => { const k = getGroupKey(r); if (!k) return; if (!g[k]) g[k]=[]; g[k].push(r); });
+  return Object.fromEntries(Object.entries(g).sort((a,b)=>a[0].localeCompare(b[0])));
+}
+
 // ════════════════════════════════════════════════════════════
-// TRENDS — Demand, TAT, Detention, Cost, Cost/Wp — all with drill-down on click
 // ════════════════════════════════════════════════════════════
 let _trendGroups = {}, _trendKeys = [];
 
@@ -2590,6 +2749,9 @@ function buildConsigneeChart(chartId, btnKey, rows, metricLabel, color, drillFn)
 }
 
 function renderConsigneePending() {
+  // Change 9: Use same styling as Top Transporters (PAL[0] = #26a69a teal)
+  const transporterColor = PAL[0]; // '#26a69a'
+
   // GRAPH 1: Placement Pending — Indent Date valid AND Act. Placement Date NOT valid
   const placementPending = filteredData.filter(r =>
     r._indentDate && !r._actPlacement
@@ -2598,7 +2760,7 @@ function renderConsigneePending() {
     'chart-cn-placement', 'CnPlacement',
     placementPending,
     'Placement Pending',
-    '#ff6b6b',
+    transporterColor,
   );
 
   // GRAPH 2: Unloading Pending — Actual Reporting exists AND Unloading/Release NOT valid
@@ -2609,7 +2771,7 @@ function renderConsigneePending() {
     'chart-cn-unloading', 'CnUnloading',
     unloadingPending,
     'Unloading Pending',
-    '#ff9f43',
+    transporterColor,
   );
 }
 
@@ -2743,10 +2905,21 @@ function makeCFBarChart(id, displayLbls, rawLbls, datasets, cfKey, horizontal=fa
         }}
       },
       scales:{
-        x:{grid:{color:'#1a2e28'},beginAtZero:true},
-        y:{grid:horizontal?{color:'#1a2e28'}:{display:false},ticks:{font:{size:10}}}
+        x:{grid:{color:'rgba(26,122,110,.1)'},beginAtZero:true},
+        y:{grid:horizontal?{color:'rgba(26,122,110,.1)'}:{display:false},ticks:{font:{size:10}}}
       },
-      onClick:(e,els)=>{ crossFilter[cfKey]=els.length?rawLbls[els[0].index]:null; applyFilters(); },
+      // Change 6: Drill-down instead of cross-filter
+      onClick:(e,els)=>{
+        if (!els.length) return;
+        const val = rawLbls[els[0].index];
+        let drillRows;
+        if (cfKey==='transporter') drillRows = filteredData.filter(r=>r._transporter===val);
+        else if (cfKey==='route')  drillRows = filteredData.filter(r=>`${r._from} → ${r._to}`===val);
+        else if (cfKey==='vehicle') drillRows = filteredData.filter(r=>r._vehType===val);
+        else if (cfKey==='customer') drillRows = filteredData.filter(r=>r._customer===val);
+        else drillRows = filteredData;
+        drillWithHighlight(`${cfKey.charAt(0).toUpperCase()+cfKey.slice(1)}: ${val}`, drillRows);
+      },
       animation:{duration:400}
     }
   });
@@ -2764,7 +2937,16 @@ function makeCFPieChart(id, displayLbls, rawLbls, data, cfKey) {
         legend:{position:'right',labels:{boxWidth:10,padding:12,font:{size:10}}},
         tooltip:{callbacks:{afterLabel:ctx=>`${((ctx.parsed/(filteredData.length||1))*100).toFixed(1)}% of total`}}
       },
-      onClick:(e,els)=>{ crossFilter[cfKey]=els.length?rawLbls[els[0].index]:null; applyFilters(); },
+      // Change 6: Drill-down instead of cross-filter
+      onClick:(e,els)=>{
+        if (!els.length) return;
+        const val = rawLbls[els[0].index];
+        let drillRows;
+        if (cfKey==='vehicle')  drillRows = filteredData.filter(r=>r._vehType===val);
+        else if (cfKey==='customer') drillRows = filteredData.filter(r=>r._customer===val);
+        else drillRows = filteredData;
+        drillWithHighlight(`${cfKey.charAt(0).toUpperCase()+cfKey.slice(1)}: ${val}`, drillRows);
+      },
       animation:{duration:400}
     }
   });
@@ -2866,6 +3048,10 @@ const DRILL_COLS = [
   'Unloading/Release at Destination','VSLL Billing Customer','Consignee Name',
   'From','To','Veh. Type','Veh. No.','LR No./ Shipment No.','Transporter Name',
   'THC (Rs.)','Total Freight (Rs.)','Total Wp','Remarks','Current Location',
+  'PLANT /WH NAME','THC (Rs.) For DashBoard','Total Freight (Rs.) For DashBoard',
+  'TRIP NUM',
+  'Damage Pcs','Damage Nature of Loss','Damage Insured Name','Damage Invoice Qty',
+  'Damage ORIGIN','Damage DESTINATION','Damage CB/OB Vehicle','Damage Claimed Value','Damage Bucket',
   '_status','_tripType','_placementDelay','_dispatchDelay','_transitTime',
   '_totalDetention','_freight','_thc','_costPerWp'
 ];
@@ -2873,8 +3059,16 @@ const DRILL_COLS = [
 const DRILL_LABELS = {
   '_status':'Status','_tripType':'Trip Type','_placementDelay':'Plcmt Delay(d)',
   '_dispatchDelay':'Disp Delay(d)','_transitTime':'Transit(d)',
-  '_totalDetention':'Detention(d)','_freight':'Freight(₹)','_thc':'THC(₹)',
-  '_costPerWp':'₹/Wp'
+  '_totalDetention':'Detention(d)','_freight':'Freight(₹)','_thc':'THC Dashboard(₹)',
+  '_costPerWp':'₹/Wp',
+  'PLANT /WH NAME':'Plant/WH','THC (Rs.) For DashBoard':'THC Dashboard(₹)',
+  'Total Freight (Rs.) For DashBoard':'Freight Dashboard(₹)',
+  'TRIP NUM':'Trip Num',
+  'Damage Pcs':'Dmg Pcs','Damage Nature of Loss':'Dmg Nature',
+  'Damage Insured Name':'Insured','Damage Invoice Qty':'Dmg Inv Qty',
+  'Damage ORIGIN':'Dmg Origin','Damage DESTINATION':'Dmg Dest',
+  'Damage CB/OB Vehicle':'CB/OB Veh','Damage Claimed Value':'Claim Value(₹)',
+  'Damage Bucket':'Dmg Bucket'
 };
 
 // ════════════════════════════════════════════════════════════
@@ -2964,7 +3158,7 @@ function renderDrillTable() {
     let v = r[col];
     if (v instanceof Date) v = v.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'2-digit'});
     else if (v === null || v === undefined) v = '—';
-    else if (col === '_freight' || col === '_thc') v = v > 0 ? '₹' + Math.round(v).toLocaleString('en-IN') : '—';
+    else if (col === '_freight' || col === '_thc' || col === 'THC (Rs.) For DashBoard' || col === 'Total Freight (Rs.) For DashBoard' || col === 'Damage Claimed Value') v = (v && v > 0) ? '₹' + Math.round(v).toLocaleString('en-IN') : '—';
     else if (col === '_costPerWp') v = v > 0 ? '₹' + (+v).toFixed(4) : '—';
     else v = String(v).slice(0, 60);
     return `<td>${v}</td>`;
@@ -2990,6 +3184,195 @@ function exportDrillCSV() {
   a.download = 'vsl_drill_' + Date.now() + '.csv';
   a.click(); URL.revokeObjectURL(url);
 }
+
+// ════════════════════════════════════════════════════════════
+// FILTER TAGS + CHART META
+// ════════════════════════════════════════════════════════════
+function renderFilterTags() {
+  const tagsEl  = document.getElementById('filter-tags');
+  const statusEl = document.getElementById('filter-tags-status');
+  const toggleBtn = document.getElementById('filter-toggle-btn');
+  if (!tagsEl) return;
+
+  const labels = {
+    customer:'Customer', from:'From', to:'To', transporter:'Transporter',
+    vehType:'Veh.Type', status:'Status', tripType:'Trip Type', consignee:'Consignee', plant:'Plant/WH'
+  };
+
+  let tags = [];
+  Object.entries(msState).forEach(([key, excSet]) => {
+    if (excSet.size === 0) return;
+    const allOpts = _msOptions[key] || [];
+    const included = allOpts.filter(o => !excSet.has(String(o).trim()));
+    if (included.length > 0 && included.length < allOpts.length) {
+      included.forEach(v => {
+        tags.push(`<span class="filter-tag" title="${labels[key]}: ${v}">${labels[key]}: ${String(v).slice(0,18)}</span>`);
+      });
+    }
+  });
+  // Date range
+  const dfrom = document.getElementById('f-date-from')?.value;
+  const dto   = document.getElementById('f-date-to')?.value;
+  if (dfrom || dto) {
+    tags.push(`<span class="filter-tag">📅 ${dfrom||'…'} → ${dto||'…'}</span>`);
+  }
+
+  tagsEl.innerHTML = tags.join('');
+  if (statusEl) statusEl.textContent = tags.length ? `${tags.length} filter${tags.length>1?'s':''} active` : '';
+  if (toggleBtn) {
+    toggleBtn.style.display = tags.length > 3 ? 'inline-block' : 'none';
+  }
+}
+
+function updateChartMeta() {
+  const el = document.getElementById('chart-title-meta');
+  if (!el) return;
+  const gran = granularity.charAt(0).toUpperCase() + granularity.slice(1);
+  const dt = dateType.charAt(0).toUpperCase() + dateType.slice(1);
+  el.textContent = `${gran} · By ${dt} Date · ${filteredData.length} records`;
+}
+
+
+// Excludes rows where Damage Nature of Loss = "No Damage" / "No damage" etc.
+// ════════════════════════════════════════════════════════════
+function renderDamageAnalytics() {
+  const isNoDamage = v => !v || String(v).trim().toLowerCase() === 'no damage' || String(v).trim() === '-';
+  const dmgRows = filteredData.filter(r => !isNoDamage(r._damageNature));
+
+  const kpiEl = document.getElementById('kpi-damage');
+  const metaEl = document.getElementById('damage-meta');
+  if (metaEl) metaEl.textContent = `${dmgRows.length} damage cases (excluding No Damage)`;
+
+  window._dmgRows = dmgRows;
+
+  if (kpiEl) {
+    const totalCases = dmgRows.length;
+    const totalPcs = safeSum(dmgRows.map(r => r._damagePcs));
+    const totalClaim = safeSum(dmgRows.map(r => r._damageClaimValue));
+    const avgClaim = totalCases ? totalClaim / totalCases : 0;
+
+    kpiEl.innerHTML =
+      kpiCard('🔧','Total Damage Cases', fmtN(totalCases), '', 'Rows with damage (excl. No Damage)', 'danger',
+        `drillOpen('Damage Cases',window._dmgRows)`) +
+      kpiCard('📦','Total Damaged Pieces', fmtN(totalPcs), '', 'Sum of Damage Pcs', 'warning',
+        `drillOpen('Damaged Pieces',window._dmgRows.filter(r=>r._damagePcs>0))`) +
+      kpiCard('💸','Total Claimed Value', fmtMoney(totalClaim), '', 'Sum of Damage Claimed Value', 'danger',
+        `drillOpen('Damage Claims',window._dmgRows.filter(r=>r._damageClaimValue>0))`) +
+      kpiCard('📊','Avg Claimed Value',
+        avgClaim > 0 ? fmtMoney(avgClaim) : '₹0', '', 'Total Claim ÷ Cases', 'warning',
+        `drillOpen('Avg Claim',window._dmgRows)`);
+  }
+
+  // Helper: horizontal bar chart for damage
+  function makeDmgBar(chartId, btnKey, entries, metricLabel, color, drillMap) {
+    destroyChart(chartId);
+    const ctx = document.getElementById(chartId); if (!ctx) return;
+    const sorted = [...entries].sort((a,b) => b[1]-a[1]).slice(0,10);
+    const labels = sorted.map(([k]) => k.length>30 ? k.slice(0,28)+'…' : k);
+    const rawLabels = sorted.map(([k]) => k);
+    const vals = sorted.map(([,v]) => v);
+    const dlCfg = {
+      display: _chartLabelState[chartId] || false,
+      font:{size:9,weight:'600',family:"'Inter',sans-serif"},
+      color:'#0d2420', anchor:'end', align:'end', offset:2,
+      backgroundColor:'rgba(255,255,255,.78)', borderRadius:3,
+      padding:{top:2,bottom:2,left:4,right:4},
+      formatter: v => v >= 1e5 ? '₹'+(v/1e5).toFixed(1)+'L' : v >= 1000 ? Math.round(v).toLocaleString('en-IN') : Number(v.toFixed(1)).toLocaleString('en-IN')
+    };
+    allCharts[chartId] = new Chart(ctx, {
+      type:'bar',
+      data:{ labels, datasets:[{
+        label: metricLabel, data: vals,
+        backgroundColor: color+'cc', borderColor: color,
+        borderWidth:1, borderRadius:4, datalabels: dlCfg
+      }]},
+      options:{
+        responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{
+          legend:{display:false}, datalabels: dlCfg,
+          tooltip:{callbacks:{ title: items => rawLabels[items[0].dataIndex] }}
+        },
+        scales:{
+          x:{grid:{color:'rgba(26,122,110,.1)'},beginAtZero:true,ticks:{font:{size:9}}},
+          y:{grid:{display:false},ticks:{font:{size:10}}}
+        },
+        animation:{duration:500},
+        onClick:(e,els) => {
+          if (!els.length) return;
+          const key = rawLabels[els[0].index];
+          const drillRows = drillMap[key] || [];
+          drillWithHighlight(`${metricLabel}: ${key}`, drillRows);
+        }
+      }
+    });
+  }
+
+  // Graph 1: Damage Nature Distribution (count)
+  const natureCnt = {}, natureRowMap = {};
+  dmgRows.forEach(r => {
+    const k = r._damageNature || 'Unknown';
+    natureCnt[k] = (natureCnt[k]||0) + 1;
+    if (!natureRowMap[k]) natureRowMap[k] = [];
+    natureRowMap[k].push(r);
+  });
+  makeDmgBar('chart-dmg-nature','DmgNature', Object.entries(natureCnt), 'Count', '#ff6b6b', natureRowMap);
+
+  // Graph 2: Claimed Value by Nature
+  const claimByNature = {}, claimNatureRowMap = {};
+  dmgRows.forEach(r => {
+    const k = r._damageNature || 'Unknown';
+    claimByNature[k] = (claimByNature[k]||0) + (r._damageClaimValue||0);
+    if (!claimNatureRowMap[k]) claimNatureRowMap[k] = [];
+    claimNatureRowMap[k].push(r);
+  });
+  makeDmgBar('chart-dmg-claim-nature','DmgClaimNature', Object.entries(claimByNature), 'Claim Value (₹)', '#ff9f43', claimNatureRowMap);
+
+  // Graph 3: Damage by Vehicle Type (CB/OB)
+  const vehCnt = {}, vehRowMap = {};
+  dmgRows.forEach(r => {
+    const k = r._damageCBOB || 'Unknown';
+    if (!k || k==='-') return;
+    vehCnt[k] = (vehCnt[k]||0) + 1;
+    if (!vehRowMap[k]) vehRowMap[k] = [];
+    vehRowMap[k].push(r);
+  });
+  makeDmgBar('chart-dmg-veh','DmgVeh', Object.entries(vehCnt), 'Count', '#a29bfe', vehRowMap);
+
+  // Graph 4: Damage by Destination (Top 10 count)
+  const destCnt = {}, destRowMap = {};
+  dmgRows.forEach(r => {
+    const k = r._damageDest || 'Unknown';
+    if (!k || k==='-') return;
+    destCnt[k] = (destCnt[k]||0) + 1;
+    if (!destRowMap[k]) destRowMap[k] = [];
+    destRowMap[k].push(r);
+  });
+  makeDmgBar('chart-dmg-dest','DmgDest', Object.entries(destCnt), 'Count', '#54a0ff', destRowMap);
+
+  // Graph 5: Damage Bucket Analysis (count)
+  const bucketCnt = {}, bucketRowMap = {};
+  dmgRows.forEach(r => {
+    const k = r._damageBucket || 'Unknown';
+    if (!k || k==='-') return;
+    bucketCnt[k] = (bucketCnt[k]||0) + 1;
+    if (!bucketRowMap[k]) bucketRowMap[k] = [];
+    bucketRowMap[k].push(r);
+  });
+  makeDmgBar('chart-dmg-bucket','DmgBucket', Object.entries(bucketCnt), 'Count', '#ffd32a', bucketRowMap);
+
+  // Graph 6: Claim Value by Insured Party
+  const insuredClaim = {}, insuredRowMap = {};
+  dmgRows.forEach(r => {
+    const k = r._damageInsured || 'Unknown';
+    if (!k || k==='-') return;
+    insuredClaim[k] = (insuredClaim[k]||0) + (r._damageClaimValue||0);
+    if (!insuredRowMap[k]) insuredRowMap[k] = [];
+    insuredRowMap[k].push(r);
+  });
+  makeDmgBar('chart-dmg-insured','DmgInsured', Object.entries(insuredClaim), 'Claim Value (₹)', '#fd79a8', insuredRowMap);
+}
+
+
 
 </script>
 </body>
